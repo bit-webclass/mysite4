@@ -1,0 +1,4 @@
+@CHARSET "UTF-8";
+
+#user .block-label			{ display: block; }
+#user fieldset				{ border: none ; margin: 0px 0px 20px 0px; }

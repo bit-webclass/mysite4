@@ -1,0 +1,62 @@
+@CHARSET "UTF-8";
+
+#gallery form, 
+#gallery table	{ width:100% }
+
+#gallery  table	{border-collapse: collapse; }
+#gallery  table td { border:1px solid #808080; padding:5px }
+
+
+
+#gallery ul		{ width:100%; margin-top:10px }
+#gallery ul li	{ width:100%; margin-top:10px }
+
+#gallery ul	{
+	width:100%;
+	clear:both;
+}
+
+#gallery ul li {
+	position:relative;
+	float:left;
+	width:132px;
+	height:132px;
+	padding:2px;
+	margin:3px 3px 3px 3px;
+	border:1px solid #c0c0c0;
+	background-color:#e9e9e9;
+	overflow:hidden;
+}
+
+
+#gallery ul li img {
+	width:126px;
+	height:126px;
+	background-size: 132x;
+	background-repeat: no-repeat;
+	background-position: center center;
+	cursor:pointer;
+}
+
+#gallery #btnImgPop {
+	float: right;
+	margin: 0px 10px 10px 0px;
+}
+
+#delPop .modal-body{
+	text-align: left;
+}
+
+#delPop #comment {
+	width: 100%;
+}
+
+
+#delPop #file {
+	width: 100%;
+}
+
+
+.formgroup {
+	margin: 0px 20px 20px 20px;
+}

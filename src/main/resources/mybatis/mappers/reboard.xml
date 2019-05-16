@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="reboard">
+
+	<!-- 글목록 가져오기 -->
+	<select id="selectList" resultType="com.javaex.vo.ReboardVo">
+		<![CDATA[
+			select  rnum,
+					no,
+					title,
+					content,
+					hit,
+					regDate,
+					userNo,
+					userName,
+					groupNo,
+					orderNo,
+					depth,
+					state
+			from (select rownum rnum,
+						 no,
+						 title,
+					 	 content,
+					  	 hit,
+						 regDate,
+						 userNo,
+						 userName,
+						 groupNo,
+						 orderNo,
+						 depth,
+						 state
+				  from (select  r.no,
+				  		  		r.title,
+							  	r.content,
+							  	r.hit,
+							  	r.reg_date regDate,
+							  	r.user_No userNo,
+							 	u.name userName,
+							  	r.group_no groupNo,
+							 	r.order_no orderNo,
+							 	r.depth,
+							 	r.state
+			      		from reboard r, users u
+				  		where r.user_No = u.no
+		]]>		  
+				  	<if test="kwd != null and kwd !=''">
+				  		and state != 'del'
+				  		and title like '%'|| #{kwd} ||'%'
+				  	</if> 
+		<![CDATA[		  
+				  		order by groupNo desc, orderNo asc
+				 		)	
+				  )
+			where rnum>#{startRnum} and rnum<=#{endRnum} 
+		]]>
+	</select>	
+	
+	<!-- 전체 글갯수 -->
+	<select id="totalCount" parameterType="String" resultType="int" >
+		<![CDATA[
+			select count(*)
+			from reboard
+		]]>	
+		<if test="_parameter  != null and _parameter !=''">
+			where title like '%'|| #{kwd} ||'%'
+		</if>
+	</select>
+	
+	
+	
+
+	<!-- 글저장 -->
+	<insert id="insert" parameterType="com.javaex.vo.ReboardVo">
+		<![CDATA[
+			insert into reboard
+				values (
+						seq_reboard_no.nextval,
+						#{title},
+						#{content},
+						0,
+						sysdate,
+						#{userNo},
+		]]>	
+			<choose>
+				<when test="groupNo == 0 or groupNo == '' ">			
+						seq_reboard_no.currval,
+				</when>
+				<otherwise>
+						#{groupNo },
+				</otherwise>
+			</choose>
+		<![CDATA[
+						#{orderNo },
+						#{depth },
+						'w'
+				)
+		]]>
+						
+	</insert>
+	
+	
+	<!-- orderNo증가시키기 -->
+	<update id="increaseOrderNo" parameterType="map">
+		<![CDATA[
+			update reboard
+			set order_no = order_no+1
+			where group_no = #{groupNo }
+			and order_no > #{orderNo }
+		]]>
+	</update>
+	
+	
+
+	<!-- 글 가져오기 -->
+	<select id="selectReboard" parameterType="int" resultType="com.javaex.vo.ReboardVo">
+		<![CDATA[
+			select  r.no,
+					r.title,
+					r.content,
+					r.hit,
+					r.reg_date regDate,
+					r.user_No userNo,
+					u.name userName,
+					r.group_no groupNo,
+					r.order_no orderNo,
+					r.depth,
+					r.state
+			from reboard r, users u
+			where r.user_No = u.no
+			and r.no = #{no}
+		]]>
+	</select>
+	
+	
+	<!-- 조회수 증가 -->
+	<update id="updateHit" parameterType="int">
+		<![CDATA[
+			update reboard 
+			set hit = hit+1
+			where no = #{no}
+		]]>
+	</update>
+	
+	
+	<!-- 글수정 -->
+	<update id="updateReboard" parameterType="com.javaex.vo.ReboardVo">
+		<![CDATA[
+			update reboard
+			set title=#{title },
+		   		content=#{content }
+			where no=#{no }
+		  	and user_no = #{userNo}
+		]]>
+
+	</update>
+	
+	
+	<!-- 삭제 -->
+	<update id="deleteReboard" parameterType="com.javaex.vo.ReboardVo">
+		<![CDATA[
+			update reboard
+			set state= 'del'
+			where no=#{no }
+		  	and user_no = #{userNo}
+		]]>
+	</update>
+	
+</mapper>
